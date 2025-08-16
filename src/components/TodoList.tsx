@@ -49,7 +49,7 @@ export default function TodoList({ todos }: Props) {
                                         ref={provided.innerRef}
                                         {...provided.draggableProps}
                                         {...provided.dragHandleProps}
-                                        className={cn("flex items-center gap-x-2",)}
+                                        className={cn("flex items-center gap-x-2")}
                                     >
                                         <LucideGripVertical className={cn("opacity-30", snapshot.isDragging && "opacity-100")} />
                                         <TodoItem todo={todo} isDragging={snapshot.isDragging} />

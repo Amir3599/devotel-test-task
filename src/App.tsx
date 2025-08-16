@@ -5,6 +5,7 @@ import TodoList from "./components/TodoList"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ThemeToggle } from "./components/ThemeToggle"
+import TodosSkeleton from "./components/TodosSkeleton"
 
 export default function App() {
   const { todosQuery } = useTodos()
@@ -33,7 +34,6 @@ export default function App() {
     return filteredTodos;
   }, [todosQuery.data, search, filter, sort]);
 
-  if (todosQuery.isLoading) return <p>Loading...</p>
   if (todosQuery.isError) return <p>Error loading todos</p>
 
   return (
@@ -72,7 +72,9 @@ export default function App() {
       </div>
 
       <div className="mb-16">
-        <TodoList todos={filteredTodos} />
+        {todosQuery.isLoading ? (
+          <TodosSkeleton count={7} />
+        ) : <TodoList todos={filteredTodos} />}
       </div>
 
       <ThemeToggle />
