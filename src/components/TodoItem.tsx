@@ -21,10 +21,11 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import type { Todos } from "@/types/todos"
-import { Switch } from "./ui/switch"
+import { Switch } from "@/components/ui/switch"
+import { Card, CardContent } from "@/components/ui/card"
 import { Trash2Icon, Edit2Icon } from "lucide-react"
 import { cn } from "@/lib/utils"
+import type { Todos } from "@/types/todos"
 
 interface Props {
     todo: Todos.Todo
@@ -50,90 +51,96 @@ export default function TodoItem({ todo, isDragging }: Props) {
         )
     }
 
-
     return (
-        <div
+        <Card
             className={cn(
-                "flex justify-between items-center p-2 border-b rounded-lg flex-1 shadow-sm bg-white",
-                isDragging && "shadow-lg"
+                "shadow-sm transition-all hover:shadow-md w-full p-0",
+                isDragging && "shadow-lg border-primary"
             )}
         >
-            <span
-                className={todo.completed ? "line-through cursor-pointer" : "cursor-pointer"}
-            >
-                {todo.todo}
-            </span>
+            <CardContent className="flex justify-between items-center p-3">
+                {/* متن تسک */}
+                <span
+                    className={cn(
+                        "font-medium",
+                        todo.completed && "line-through text-gray-400"
+                    )}
+                >
+                    {todo.todo}
+                </span>
 
-            <div className="flex items-center gap-x-2">
-                {/* Toggle */}
-                <Switch
-                    checked={todo.completed}
-                    onCheckedChange={(checked) =>
-                        toggleMutation.mutate({ id: todo.id ?? 0, completed: checked })
-                    }
-                />
+                {/* اکشن‌ها */}
+                <div className="flex items-center gap-x-2">
+                    {/* Toggle Completed */}
+                    <Switch
+                        checked={todo.completed}
+                        onCheckedChange={(checked) =>
+                            toggleMutation.mutate({ id: todo.id ?? 0, completed: checked })
+                        }
+                    />
 
-                {/* Edit */}
-                <Dialog open={editOpen} onOpenChange={setEditOpen}>
-                    <DialogTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            className="text-blue-600 hover:text-blue-400"
-                            size="sm"
-                        >
-                            <Edit2Icon />
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Edit Todo</DialogTitle>
-                        </DialogHeader>
-                        <Input
-                            value={editValue}
-                            onChange={(e) => setEditValue(e.target.value)}
-                        />
-                        <DialogFooter>
-                            <Button variant="outline" onClick={() => setEditOpen(false)}>
-                                Cancel
+                    {/* Edit Dialog */}
+                    <Dialog open={editOpen} onOpenChange={setEditOpen}>
+                        <DialogTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-blue-600 hover:text-blue-400"
+                            >
+                                <Edit2Icon />
                             </Button>
-                            <Button onClick={handleEditSave}>Save</Button>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
-
-                {/* Delete */}
-                <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-                    <AlertDialogTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            className="text-red-600 hover:text-red-400"
-                            size="sm"
-                        >
-                            <Trash2Icon />
-                        </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Todo</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                Are you sure you want to delete this todo? This action cannot be undone.
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction asChild>
-                                <Button
-                                    className="bg-red-600 hover:bg-red-400"
-                                    size="sm"
-                                    onClick={() => deleteMutation.mutate(todo.id ?? 0)}
-                                >
-                                    Delete
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Edit Todo</DialogTitle>
+                            </DialogHeader>
+                            <Input
+                                value={editValue}
+                                onChange={(e) => setEditValue(e.target.value)}
+                            />
+                            <DialogFooter>
+                                <Button variant="outline" onClick={() => setEditOpen(false)}>
+                                    Cancel
                                 </Button>
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
-            </div>
-        </div>
+                                <Button onClick={handleEditSave}>Save</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+
+                    {/* Delete Alert */}
+                    <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+                        <AlertDialogTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-red-600 hover:text-red-400"
+                            >
+                                <Trash2Icon />
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Todo</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Are you sure you want to delete this todo? This action cannot be undone.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction asChild>
+                                    <Button
+                                        className="bg-red-600 hover:bg-red-400"
+                                        size="sm"
+                                        onClick={() => deleteMutation.mutate(todo.id ?? 0)}
+                                    >
+                                        Delete
+                                    </Button>
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </div>
+            </CardContent>
+        </Card>
     )
 }
